@@ -42,7 +42,7 @@ class Folder extends DAV\Collection {
 	}
 	
 	public function getName() {
-		return $this->term->name;
+		return $this->escapeName( $this->term->name );
 	}
 	
 	public function createFile( $name, $data = null ) {
@@ -58,5 +58,31 @@ class Folder extends DAV\Collection {
 		}
 		
 		// ansonsten behandle die Daten. muss es noch hochgeladen werden? ETag zurückgeben?
+	}
+	
+	# @see https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file
+	private function removeControlChars( $string ) {
+		return preg_replace(
+			'/[\x00-\x1f]/',
+			'',
+			$string
+		);
+	}
+	
+	# @see https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file
+	private function replaceReservedChars( $string ) {
+		return preg_replace(
+			'/[<>:"\/\\|?*]/',
+			'_',
+			$string
+		);
+	}
+	
+	private function escapeName( $string ) {
+		return trim(
+			$this->replaceReservedChars(
+				$this->removeControlChars( $string )
+			)
+		);
 	}
 }
