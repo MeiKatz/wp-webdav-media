@@ -1,4 +1,8 @@
 # WP WebDAV
+Makes the media files of a WordPress instance available via WebDAV.
+
+## Endpoint
+After installing the files are available via `/wp-json/webdav/files`.
 
 ## Available filters
 
@@ -13,6 +17,6 @@
 | `wp_webdav_root_folder_name` | – | `""`| Sets the name of the root folder. |
 
 The root folder contains a folder for each defined category, and additional the following:
-* The __all folder__ contains all files indepentend of its assigned category.
-* The __unassigned folder__ contains all files without an assigned category.
+* The __all folder__ contains all files indepentend of its assigned category (visible as `[all files]`).
+* The __unassigned folder__ contains all files without an assigned category (visible as `[unassigned]`).
 * The __readme file__ (`Readme.md`) is handy for NextCloud folders.
