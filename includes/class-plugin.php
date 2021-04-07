@@ -119,7 +119,7 @@ class Plugin {
     load_plugin_textdomain(
       'wp-webdav-media',
       false,
-      plugin_basename( dirname( __FILE__ ) ) . '/languages/'
+      plugin_basename( dirname( __FILE__ ) ) . '/../languages/'
     );
   }
 }

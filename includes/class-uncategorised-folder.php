@@ -43,7 +43,7 @@ class UncategorisedFolder extends DAV\Collection {
   public function getName() {
     return sprintf(
       '[%s]',
-      __( '[unassigned]', 'wp-webdav-media' )
+      __( 'unassigned', 'wp-webdav-media' )
     );
   }
 }
