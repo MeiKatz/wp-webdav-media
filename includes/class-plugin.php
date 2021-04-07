@@ -40,25 +40,8 @@ class Plugin {
       return;
     }
 
-    $methods = self::$METHODS;
-    $self = $this;
-
-    add_action(
-      'rest_api_init',
-      function () use ( $self, $methods ) {
-
-      register_rest_route( 'webdav', 'files', [
-        'methods' => join( ",", $methods ),
-        'callback'            => [ $self, 'action' ], // make sure it returns an XML string
-        'permission_callback' => '__return_true',
-      ]);
-
-      register_rest_route( 'webdav', 'files/.*', [
-        'methods' => join( ",", $methods ),
-        'callback'            => [ $self, 'action' ], // make sure it returns an XML string
-        'permission_callback' => '__return_true',
-      ]);
-    });
+    $this->registerRoutes();
+    $this->loadTextDomain();
 
     $this->inited = true;
   }
@@ -102,5 +85,41 @@ class Plugin {
     // All we need to do now, is to fire up the server
     $server->exec();
     die();
+  }
+
+  /**
+   * @return void
+   */
+  private function registerRoutes() {
+    $methods = self::$METHODS;
+    $self = $this;
+
+    add_action(
+      'rest_api_init',
+      function () use ( $self, $methods ) {
+
+      register_rest_route( 'webdav', 'files', [
+        'methods' => join( ",", $methods ),
+        'callback'            => [ $self, 'action' ], // make sure it returns an XML string
+        'permission_callback' => '__return_true',
+      ]);
+
+      register_rest_route( 'webdav', 'files/.*', [
+        'methods' => join( ",", $methods ),
+        'callback'            => [ $self, 'action' ], // make sure it returns an XML string
+        'permission_callback' => '__return_true',
+      ]);
+    });
+  }
+
+  /**
+   * @return void
+   */
+  private function loadTextDomain() {
+    load_plugin_textdomain(
+      'wp-webdav-media',
+      false,
+      plugin_basename( dirname( __FILE__ ) ) . '/languages/'
+    );
   }
 }

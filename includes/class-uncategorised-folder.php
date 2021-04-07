@@ -41,6 +41,9 @@ class UncategorisedFolder extends DAV\Collection {
    * @return string
    */
   public function getName() {
-    return '[Ohne Kategorie]';
+    return sprintf(
+      '[%s]',
+      __( '[unassigned]', 'wp-webdav-media' )
+    );
   }
 }

@@ -1,6 +1,8 @@
 <?php
 /*
 Plugin Name: WP-WebDAV-Media
+Text Domain: wp-webdav-media
+Domain Path: /languages
 Version: 1.0
 Description: Makes media library accessable via WebDAV
 Author: Gregor Mitzka

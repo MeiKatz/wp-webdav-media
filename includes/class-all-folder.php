@@ -33,6 +33,9 @@ class AllFolder extends DAV\Collection {
    * @return string
    */
   public function getName() {
-    return '[Alle Dateien]';
+    return sprintf(
+      '[%s]',
+      __( '[all files]', 'wp-webdav-media' )
+    );
   }
 }
