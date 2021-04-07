@@ -15,6 +15,7 @@ After installing the files are available via `/wp-json/webdav/files`.
 | `wp_webdav_show_unassigned_folder` | – | `true` | Handles if the __unassigned folder__ is visible. |
 | `wp_webdav_show_readme_file` | – | `true` | Handles if a __readme file__ is visible in the root folder. |
 | `wp_webdav_root_folder_name` | – | `""`| Sets the name of the root folder. |
+| `wp_webdav_nodes` | `WP_WebDAV\Node[]` | ... | Manipulate list of nodes of the passed folder. |
 
 The root folder contains a folder for each defined category, and additional the following:
 * The __all folder__ contains all files indepentend of its assigned category (visible as `[all files]`).

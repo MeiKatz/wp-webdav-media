@@ -34,7 +34,11 @@ class UnassignedFolder extends DAV\Collection {
       );
     }
 
-    return $children;
+    return apply_filters(
+      'wp_webdav_nodes',
+      $children,
+      $this
+    );
   }
 
   /**
