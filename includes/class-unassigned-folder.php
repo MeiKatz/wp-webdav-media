@@ -5,7 +5,7 @@ use Sabre;
 use Sabre\DAV;
 use \WP_Query;
 
-class UncategorisedFolder extends DAV\Collection {
+class UnassignedFolder extends DAV\Collection {
   /**
    * @return File[]
    */

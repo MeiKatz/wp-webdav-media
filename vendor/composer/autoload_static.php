@@ -84,10 +84,11 @@ class ComposerStaticInit847373255b78b4568855270ee7332a39
         'WP_WebDAV\\AssetsFile' => __DIR__ . '/../..' . '/includes/class-assets-file.php',
         'WP_WebDAV\\File' => __DIR__ . '/../..' . '/includes/class-file.php',
         'WP_WebDAV\\Folder' => __DIR__ . '/../..' . '/includes/class-folder.php',
+        'WP_WebDAV\\Node' => __DIR__ . '/../..' . '/includes/class-node.php',
         'WP_WebDAV\\Plugin' => __DIR__ . '/../..' . '/includes/class-plugin.php',
         'WP_WebDAV\\RootFolder' => __DIR__ . '/../..' . '/includes/class-root-folder.php',
         'WP_WebDAV\\Slug' => __DIR__ . '/../..' . '/includes/class-slug.php',
-        'WP_WebDAV\\UncategorisedFolder' => __DIR__ . '/../..' . '/includes/class-uncategorised-folder.php',
+        'WP_WebDAV\\UnassignedFolder' => __DIR__ . '/../..' . '/includes/class-unassigned-folder.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
