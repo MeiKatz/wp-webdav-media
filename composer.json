@@ -1,23 +1,22 @@
 {
-	"name": "meikatz/wp-webdav-media",
-    "description": "Adds WebDAV support to WordPress. Build with NextCloud in mind.",
-    "version": "0.1",
-    "type": "wordpress-plugin",
-    "license": "@todo",
-    "homepage": "https://github.com/MeiKatz/wp-webdav-media",
-    "authors": [
-        {
-            "name": "Gregor Mitzka",
-            "email": "gregor.mitzka@gmail.com"
-        }
-    ],
-    "require": {
-        "sabre/dav": "~3.2.0"
-    },
-    "autoload": {
-    	"classmap": [
-    	    "includes"
-    	]
+  "name": "meikatz/wp-webdav-media",
+  "description": "Adds WebDAV support to WordPress. Build with NextCloud in mind.",
+  "version": "0.1",
+  "type": "wordpress-plugin",
+  "license": "@todo",
+  "homepage": "https://github.com/MeiKatz/wp-webdav-media",
+  "authors": [
+    {
+      "name": "Gregor Mitzka",
+      "email": "gregor.mitzka@gmail.com"
     }
+  ],
+  "require": {
+    "sabre/dav": "~3.2.0"
+  },
+  "autoload": {
+  	"classmap": [
+  	 "includes"
+  	]
+  }
 }
-

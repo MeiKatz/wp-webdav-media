@@ -6,88 +6,101 @@ use Sabre\DAV\Auth;
 use \WP_User;
 
 class Plugin {
-	public static $METHODS = [
-		'GET',
-		'POST',
-		'PUT',
-		'PATCH',
-		'DELETE',
-		'HEAD',
-		'TRACE',
-		'CONNECT',
-		'OPTIONS',
-		'PROPFIND',
-		'PROPPATCH',
-		'MKCOL',
-		'COPY',
-		'MOVE',
-		'LOCK',
-		'UNLOCK',
-	];
-	
-	private $inited = false;
-		
-	public function init() {
-		if ( $this->inited ) {
-			return;
-		}
-		
-		$methods = self::$METHODS;
-		$self = $this;
-		
-		add_action(
-			'rest_api_init',
-			function () use ( $self, $methods ) {
-	
-			register_rest_route( 'webdav', 'files', [
-				'methods' => join( ",", $methods ),
-				'callback'            => [ $self, 'action' ], // make sure it returns an XML string
-				'permission_callback' => '__return_true',
-			]);
+  public static $METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'HEAD',
+    'TRACE',
+    'CONNECT',
+    'OPTIONS',
+    'PROPFIND',
+    'PROPPATCH',
+    'MKCOL',
+    'COPY',
+    'MOVE',
+    'LOCK',
+    'UNLOCK',
+  ];
 
-			register_rest_route( 'webdav', 'files/.*', [
-				'methods' => join( ",", $methods ),
-				'callback'            => [ $self, 'action' ], // make sure it returns an XML string
-				'permission_callback' => '__return_true',
-			]);
-		});
-		
-		$this->inited = true;
-	}
-	
-	public function action() {
-		$rootDirectory = new RootFolder();
+  /**
+   * @var bool
+   */
+  private $inited = false;
 
-		// The server object is responsible for making sense out of the WebDAV protocol
-		$server = new DAV\Server( $rootDirectory );
+  /**
+   * initializes the plugin
+   *
+   * @return void
+   */
+  public function init() {
+    if ( $this->inited ) {
+      return;
+    }
 
-		// If your server is not on your webroot, make sure the following line has the
-		// correct information
-		$server->setBaseUri( '/wp-json/webdav/files/' );
+    $methods = self::$METHODS;
+    $self = $this;
 
-		// This ensures that we get a pretty index in the browser, but it is
-		// optional.
-		$server->addPlugin(new DAV\Browser\Plugin());
+    add_action(
+      'rest_api_init',
+      function () use ( $self, $methods ) {
 
-		$authBackend = new Auth\Backend\BasicCallBack(function ($username, $password) {
-			$ret = wp_authenticate(
-				$username,
-				$password
-			);
+      register_rest_route( 'webdav', 'files', [
+        'methods' => join( ",", $methods ),
+        'callback'            => [ $self, 'action' ], // make sure it returns an XML string
+        'permission_callback' => '__return_true',
+      ]);
 
-			return (
-				$ret instanceof WP_User
-			);
-		});
+      register_rest_route( 'webdav', 'files/.*', [
+        'methods' => join( ",", $methods ),
+        'callback'            => [ $self, 'action' ], // make sure it returns an XML string
+        'permission_callback' => '__return_true',
+      ]);
+    });
 
-		$authBackend->setRealm( "WordPress Media Library" );
+    $this->inited = true;
+  }
 
-		$authPlugin = new Auth\Plugin( $authBackend );
+  /**
+   * callback hook for the endpoint
+   *
+   * @return void
+   */
+  public function action() {
+    $rootDirectory = new RootFolder();
 
-		$server->addPlugin( $authPlugin );
+    // The server object is responsible for making sense out of the WebDAV protocol
+    $server = new DAV\Server( $rootDirectory );
 
-		// All we need to do now, is to fire up the server
-		$server->exec();
-		die();
-	}
+    // If your server is not on your webroot, make sure the following line has the
+    // correct information
+    $server->setBaseUri( '/wp-json/webdav/files/' );
+
+    // This ensures that we get a pretty index in the browser, but it is
+    // optional.
+    $server->addPlugin(new DAV\Browser\Plugin());
+
+    $authBackend = new Auth\Backend\BasicCallBack(function ($username, $password) {
+      $ret = wp_authenticate(
+        $username,
+        $password
+      );
+
+      return (
+        $ret instanceof WP_User
+      );
+    });
+
+    $authBackend->setRealm( "WordPress Media Library" );
+
+    $authPlugin = new Auth\Plugin( $authBackend );
+
+    $server->addPlugin( $authPlugin );
+
+    // All we need to do now, is to fire up the server
+    $server->exec();
+    die();
+  }
 }

@@ -14,4 +14,3 @@ require dirname( __FILE__ ) . '/vendor/autoload.php';
 
 $webdav = new Plugin();
 $webdav->init();
-
