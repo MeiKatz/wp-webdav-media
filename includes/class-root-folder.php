@@ -111,7 +111,7 @@ class RootFolder extends DAV\Collection {
    * @return bool
    */
   private function shouldShowAllFolder() {
-    return apply_filters(
+    return !!apply_filters(
       'wp_webdav_show_all_folder',
       true
     );
@@ -123,7 +123,7 @@ class RootFolder extends DAV\Collection {
    * @return bool
    */
   private function shouldShowUnassignedFolder() {
-    return apply_filters(
+    return !!apply_filters(
       'wp_webdav_show_unassigned_folder',
       true
     );
@@ -135,7 +135,7 @@ class RootFolder extends DAV\Collection {
    * @return bool
    */
   private function shouldShowReadmeFile() {
-    return apply_filters(
+    return !!apply_filters(
       'wp_webdav_show_readme_file',
       true
     );
@@ -148,7 +148,7 @@ class RootFolder extends DAV\Collection {
    * @return bool
    */
   private function canCreateNode() {
-    return apply_filters(
+    return !!apply_filters(
       'wp_webdav_can_create_node',
       false,
       $this

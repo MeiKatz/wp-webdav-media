@@ -165,7 +165,7 @@ class Folder extends DAV\Collection {
    * @return bool
    */
   private function canCreateNode() {
-    return apply_filters(
+    return !!apply_filters(
       'wp_webdav_can_create_node',
       false,
       $this
