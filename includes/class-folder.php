@@ -87,17 +87,46 @@ class Folder extends DAV\Collection {
       );
     }
 
-    $info = wp_upload_bits(
+    $file = File::create(
       $name,
-      null,
       $data
     );
 
-    if ( $info['error'] ) {
-      // mach was mit dem Fehler
+    $this->add(
+      $file
+    );
+
+    return $file->getETag();
+  }
+
+  /**
+   * Adds a file to this folder.
+   *
+   * @param WP_WebDAV\File $file
+   * @return void
+   * @throws Sabre\DAV\Exception\BadRequest
+   */
+  public function add( File $file ) {
+    $status = wp_set_post_terms(
+      $file->getID(),
+      $this->getID(),
+      'media_folder'
+    );
+
+    if ( $status === false ) {
+      throw new DAV\Exception\BadRequest(
+        'could not add file to folder'
+      );
     }
 
-    // ansonsten behandle die Daten. muss es noch hochgeladen werden? ETag zurückgeben?
+    if ( is_wp_error( $status ) ) {
+      throw new DAV\Exception\BadRequest(
+        sprintf(
+          'could not add file to folder: %s',
+          $status->get_error_message()
+        )
+      );
+    }
   }
 
   /**

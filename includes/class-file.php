@@ -1,9 +1,9 @@
 <?php
 namespace WP_WebDAV;
 
+use \WP_Post;
 use Sabre;
 use Sabre\DAV;
-use \WP_Post;
 
 class File extends DAV\File {
   /**
@@ -12,10 +12,47 @@ class File extends DAV\File {
   private $post;
 
   /**
+   * Create a file by its name and its contents.
+   *
+   * @param string $name
+   * @param resource|string $data
+   * @return WP_WebDAV\File
+   */
+  public static function create(
+    $name,
+    $data
+  ) {
+    $contents = self::readContents( $data );
+    $fileinfo = self::uploadContents(
+      $name,
+      $contents
+    );
+
+    $post = self::insertAttachment(
+      $name,
+      $fileinfo
+    );
+
+    self::generateAttachmentMetadata(
+      $post,
+      $fileinfo['file']
+    );
+
+    return new self( $post );
+  }
+
+  /**
    * @param WP_Post $post
    */
   public function __construct( WP_Post $post ) {
     $this->post = $post;
+  }
+
+  /**
+   * @return int
+   */
+  public function getID() {
+    return $this->post->ID;
   }
 
   /**
@@ -108,6 +145,131 @@ class File extends DAV\File {
    */
   public function getLastModified() {
     return strtotime( $this->post->post_modified_gmt );
+  }
+
+  /**
+   * @param resource|string $data
+   * @return string
+   */
+  private static function readContents( $data ) {
+    if ( !is_resource( $data ) ) {
+      return $data;
+    }
+
+    return stream_get_contents( $data );
+  }
+
+  /**
+   * @param string $name
+   * @param string $data
+   * @return array (information about the newly-uploaded file)
+   */
+  private static function uploadContents( $name, $data ) {
+    $fileinfo = wp_upload_bits(
+      $name,
+      null,
+      $data
+    );
+
+    if ( $fileinfo['error'] ) {
+      throw new DAV\Exception\BadRequest(
+        'could not create file: ' . $fileinfo['error']
+      );
+    }
+
+    unset( $fileinfo['error'] );
+
+    return $fileinfo;
+  }
+
+  /**
+   * @param string $filename
+   * @param array $fileinfo
+   * @return WP_Post
+   */
+  private static function insertAttachment(
+    $filename,
+    array $fileinfo
+  ) {
+    $post_id = wp_insert_post([ # @todo use wp_insert_attachment
+      #'post_author' => '@todo',
+      'post_mime_type' => $fileinfo['type'],
+      'post_name' => self::extractTitle( $filename ),
+      'post_status' => 'inherit',
+      'post_title' => self::extractTitle( $fileinfo['file'] ),
+      'post_type' => 'attachment',
+      'guid' => $fileinfo['url'],
+    ], true);
+
+    if ( is_wp_error( $post_id ) ) {
+      throw new DAV\Exception\BadRequest(
+        'could not create file: ' . $post_id->get_error_message()
+      );
+    }
+
+    # register attachment path in database
+    update_post_meta(
+      $post_id,
+      '_wp_attached_file',
+      _wp_relative_upload_path(
+        $fileinfo['file']
+      )
+    );
+
+    return get_post(
+      $post_id
+    );
+  }
+
+  /**
+   * Create and add meta data for file.
+   * For images also add sub-sizes.
+   *
+   * @param WP_Post $post
+   * @param string $filename
+   * @return void
+   */
+  private static function generateAttachmentMetadata(
+    WP_Post $post,
+    $filename
+  ) {
+    # assure function exists
+    if ( ! function_exists( 'wp_generate_attachment_metadata' ) ) {
+      include_once( ABSPATH . 'wp-admin/includes/image.php' );
+    }
+
+    wp_generate_attachment_metadata(
+      $wp_post->ID,
+      $filename
+    );
+  }
+
+  /**
+   * drop dir name and file extension
+   *
+   * @param string $path
+   * @return string
+   */
+  private static function extractTitle( $path ) {
+    $basename = basename( $path );
+
+    # find position of file extension
+    $index = strrpos(
+      $basename,
+      '.'
+    );
+
+    # has no file extension
+    if ( $index === false ) {
+      return $basename;
+    }
+
+    # drop file extension
+    return substr(
+      $basename,
+      0,
+      $index
+    );
   }
 
   /**
