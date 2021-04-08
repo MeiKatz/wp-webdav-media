@@ -20,6 +20,13 @@ class Folder extends DAV\Collection {
   }
 
   /**
+   * @return int
+   */
+  public function getID() {
+    return $this->term->term_id;
+  }
+
+  /**
    * return an array of all contained files
    *
    * @return WP_WebDAV\File[]
@@ -69,7 +76,13 @@ class Folder extends DAV\Collection {
    * @return string
    */
   public function createFile( $name, $data = null ) {
-    return parent::createFile( $name, $data );
+    if ( ! $this->canCreateNode() ) {
+      return parent::createFile(
+        $name,
+        $data
+      );
+    }
+
     $info = wp_upload_bits(
       $name,
       null,
@@ -143,6 +156,19 @@ class Folder extends DAV\Collection {
           $this->replaceWhiteSpaceChars( $string )
         )
       )
+    );
+  }
+
+  /**
+   * returns true if the current user can create a new node
+   *
+   * @return bool
+   */
+  private function canCreateNode() {
+    return apply_filters(
+      'wp_webdav_can_create_node',
+      false,
+      $this
     );
   }
 }

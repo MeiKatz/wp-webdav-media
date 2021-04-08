@@ -18,25 +18,38 @@ class RootFolder extends DAV\Collection {
   }
 
   /**
+   * @return string
+   */
+  public function getID() {
+    return '/';
+  }
+
+  /**
    * @return [File|Folder][]
    */
   public function getChildren() {
     $children = array();
 
-    array_push(
-      $children,
-      new AllFolder()
-    );
+    if ( $this->shouldShowAllFolder() ) {
+      array_push(
+        $children,
+        new AllFolder()
+      );
+    }
 
-    array_push(
-      $children,
-      new UncategorisedFolder()
-    );
+    if ( $this->shouldShowUnassignedFolder() ) {
+      array_push(
+        $children,
+        new UnassignedFolder()
+      );
+    }
 
-    array_push(
-      $children,
-      new AssetsFile( 'Readme.md' )
-    );
+    if ( $this->shouldShowReadmeFile() ) {
+      array_push(
+        $children,
+        new AssetsFile( 'Readme.md' )
+      );
+    }
 
     foreach ( $this->folders as $folder ) {
       array_push(
@@ -52,7 +65,10 @@ class RootFolder extends DAV\Collection {
    * @return string
    */
   public function getName() {
-    return '';
+    return apply_filters(
+      'wp_webdav_root_folder_name',
+      ''
+    );
   }
 
   /**
@@ -60,8 +76,16 @@ class RootFolder extends DAV\Collection {
    * @return void
    */
   public function createDirectory( $name ) {
+    if ( ! $this->canCreateNode() ) {
+      return parent::createDirectory(
+        $name
+      );
+    }
+
     if ( strpos( $name, '/' ) !== false ) {
-      throw new DAV\Exception\BadRequest( 'directory name contains invalid characters' );
+      throw new DAV\Exception\BadRequest(
+        'directory name contains invalid characters'
+      );
     }
 
     $term = term_exists(
@@ -80,6 +104,56 @@ class RootFolder extends DAV\Collection {
         'parent' => 0, // currently no support for nested folders
         'slug' => Slug::fromString( $name ),
       ]
+    );
+  }
+
+  /**
+   * returns true if the "all folder" should be added to the root folder
+   *
+   * @return bool
+   */
+  private function shouldShowAllFolder() {
+    return apply_filters(
+      'wp_webdav_show_all_folder',
+      true
+    );
+  }
+
+  /**
+   * returns true if the "unassigned folder" should be added to the root folder
+   *
+   * @return bool
+   */
+  private function shouldShowUnassignedFolder() {
+    return apply_filters(
+      'wp_webdav_show_unassigned_folder',
+      true
+    );
+  }
+
+  /**
+   * returns true if the readme file should be added to the root folder
+   *
+   * @return bool
+   */
+  private function shouldShowReadmeFile() {
+    return apply_filters(
+      'wp_webdav_show_readme_file',
+      true
+    );
+  }
+
+  /**
+   * returns true if the current user can create a new node,
+   * otherwise false
+   *
+   * @return bool
+   */
+  private function canCreateNode() {
+    return apply_filters(
+      'wp_webdav_can_create_node',
+      false,
+      $this
     );
   }
 }

@@ -6,6 +6,8 @@ use Sabre\DAV\Auth;
 use \WP_User;
 
 class Plugin {
+  const DEFAULT_REALM = 'WordPress Media Library';
+
   public static $METHODS = [
     'GET',
     'POST',
@@ -76,7 +78,9 @@ class Plugin {
       );
     });
 
-    $authBackend->setRealm( "WordPress Media Library" );
+    $authBackend->setRealm(
+      $this->getRealm()
+    );
 
     $authPlugin = new Auth\Plugin( $authBackend );
 
@@ -85,6 +89,16 @@ class Plugin {
     // All we need to do now, is to fire up the server
     $server->exec();
     die();
+  }
+
+  /**
+   * @return string
+   */
+  private function getRealm() {
+    return apply_filters(
+      'wp_webdav_realm',
+      self::DEFAULT_REALM
+    );
   }
 
   /**
