@@ -148,6 +148,28 @@ class File extends DAV\File {
   }
 
   /**
+   * @return void
+   * @throws Sabre\DAV\Exception\BadRequest
+   */
+  public function delete() {
+    if ( ! $this->canDeleteNode() ) {
+      throw new DAV\Exception\Forbidden(
+        'cannot delete file: user is not permitted to'
+      );
+    }
+
+    $status = wp_delete_attachment(
+      $this->post->ID
+    );
+
+    if ( $status === null || $status === false ) {
+      throw new DAV\Exception\BadRequest(
+        'could not delete file'
+      );
+    }
+  }
+
+  /**
    * @param resource|string $data
    * @return string
    */
@@ -285,6 +307,17 @@ class File extends DAV\File {
   private function canRenameNode() {
     return !!apply_filters(
       'wp_webdav_can_rename_node',
+      false,
+      $this
+    );
+  }
+
+  /**
+   * @return bool
+   */
+  private function canDeleteNode() {
+    return !!apply_filters(
+      'wp_webdav_can_delete_node',
       false,
       $this
     );
