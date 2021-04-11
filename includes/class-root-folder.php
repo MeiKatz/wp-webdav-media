@@ -37,10 +37,12 @@ class RootFolder extends DAV\Collection {
       );
     }
 
-    array_push(
-      $children,
-      new UnassignedFolder()
-    );
+    if ( $this->shouldShowUnassignedFolder() ) {
+      array_push(
+        $children,
+        new UnassignedFolder()
+      );
+    }
 
     if ( $this->shouldShowReadmeFile() ) {
       array_push(
