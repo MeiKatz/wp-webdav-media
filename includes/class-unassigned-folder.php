@@ -12,7 +12,7 @@ class UnassignedFolder extends DAV\Collection {
   public function getChildren() {
     $children = array();
 
-    $query = new WP_Query([
+    $wp_query = new WP_Query([
       'post_type' => 'attachment',
       'post_status' => 'inherit',
       'posts_per_page' => -1,
@@ -25,7 +25,7 @@ class UnassignedFolder extends DAV\Collection {
       ]
     ]);
 
-    $attachments = $query->get_posts();
+    $attachments = $wp_query->get_posts();
 
     foreach ( $attachments as $attachment ) {
       array_push(

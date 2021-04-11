@@ -9,7 +9,7 @@ class File extends DAV\File {
   /**
    * @var WP_Post
    */
-  private $post;
+  private $wp_post;
 
   /**
    * Create a file by its name and its contents.
@@ -42,17 +42,17 @@ class File extends DAV\File {
   }
 
   /**
-   * @param WP_Post $post
+   * @param WP_Post $wp_post
    */
-  public function __construct( WP_Post $post ) {
-    $this->post = $post;
+  public function __construct( WP_Post $wp_post ) {
+    $this->wp_post = $wp_post;
   }
 
   /**
    * @return int
    */
   public function getID() {
-    return $this->post->ID;
+    return $this->wp_post->ID;
   }
 
   /**
@@ -95,7 +95,7 @@ class File extends DAV\File {
     }
 
     $success = update_attached_file(
-      $this->post,
+      $this->wp_post,
       $new_path
     );
 
@@ -137,14 +137,14 @@ class File extends DAV\File {
    * @return string
    */
   public function getContentType() {
-    return $this->post->post_mime_type;
+    return $this->wp_post->post_mime_type;
   }
 
   /**
    * @return int
    */
   public function getLastModified() {
-    return strtotime( $this->post->post_modified_gmt );
+    return strtotime( $this->wp_post->post_modified_gmt );
   }
 
   /**
@@ -159,7 +159,7 @@ class File extends DAV\File {
     }
 
     $status = wp_delete_attachment(
-      $this->post->ID
+      $this->wp_post->ID
     );
 
     if ( $status === null || $status === false ) {
@@ -213,7 +213,7 @@ class File extends DAV\File {
     $filename,
     array $fileinfo
   ) {
-    $post_id = wp_insert_post([ # @todo use wp_insert_attachment
+    $wp_post_id = wp_insert_post([ # @todo use wp_insert_attachment
       #'post_author' => '@todo',
       'post_mime_type' => $fileinfo['type'],
       'post_name' => self::extractTitle( $filename ),
@@ -223,15 +223,15 @@ class File extends DAV\File {
       'guid' => $fileinfo['url'],
     ], true);
 
-    if ( is_wp_error( $post_id ) ) {
+    if ( is_wp_error( $wp_post_id ) ) {
       throw new DAV\Exception\BadRequest(
-        'could not create file: ' . $post_id->get_error_message()
+        'could not create file: ' . $wp_post_id->get_error_message()
       );
     }
 
     # register attachment path in database
     update_post_meta(
-      $post_id,
+      $wp_post_id,
       '_wp_attached_file',
       _wp_relative_upload_path(
         $fileinfo['file']
@@ -239,7 +239,7 @@ class File extends DAV\File {
     );
 
     return get_post(
-      $post_id
+      $wp_post_id
     );
   }
 
@@ -247,12 +247,12 @@ class File extends DAV\File {
    * Create and add meta data for file.
    * For images also add sub-sizes.
    *
-   * @param WP_Post $post
+   * @param WP_Post $wp_post
    * @param string $filename
    * @return void
    */
   private static function generateAttachmentMetadata(
-    WP_Post $post,
+    WP_Post $wp_post,
     $filename
   ) {
     # assure function exists
@@ -298,7 +298,7 @@ class File extends DAV\File {
    * @return string
    */
   private function getLocalPath() {
-    return get_attached_file( $this->post->ID );
+    return get_attached_file( $this->wp_post->ID );
   }
 
   /**

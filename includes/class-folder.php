@@ -10,20 +10,20 @@ class Folder extends DAV\Collection {
   /**
    * @var WP_Term
    */
-  private $term;
+  private $wp_term;
 
   /**
-   * @param WP_Term $term
+   * @param WP_Term $wp_term
    */
-  public function __construct( WP_Term $term ) {
-    $this->term = $term;
+  public function __construct( WP_Term $wp_term ) {
+    $this->wp_term = $wp_term;
   }
 
   /**
    * @return int
    */
   public function getID() {
-    return $this->term->term_id;
+    return $this->wp_term->term_id;
   }
 
   /**
@@ -42,7 +42,7 @@ class Folder extends DAV\Collection {
         [
           'taxonomy' => 'media_folder',
           'field' => 'term_taxonomy_id',
-          'terms' => $this->term->term_taxonomy_id,
+          'terms' => $this->wp_term->term_taxonomy_id,
         ]
       ],
     ]);
@@ -69,7 +69,7 @@ class Folder extends DAV\Collection {
    * @return string
    */
   public function getName() {
-    return $this->escapeFolderName( $this->term->name );
+    return $this->escapeFolderName( $this->wp_term->name );
   }
 
   /**
