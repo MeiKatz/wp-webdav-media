@@ -100,6 +100,30 @@ class Folder extends DAV\Collection {
   }
 
   /**
+   * @param string $name
+   * @return void
+   * @throws Sabre\DAV\Exception\BadRequest
+   */
+  public function createDirectory( $name ) {
+    if ( ! $this->canCreateNode() ) {
+      return parent::createDirectory(
+        $name
+      );
+    }
+
+    $status = wp_insert_term(
+      $name,
+      'media_folder'
+    );
+
+    if ( is_wp_error( $status ) ) {
+      throw new DAV\Exception\BadRequest(
+        'could not create folder: ' . $status->get_error_message()
+      );
+    }
+  }
+
+  /**
    * Adds a file to this folder.
    *
    * @param WP_WebDAV\File $file
