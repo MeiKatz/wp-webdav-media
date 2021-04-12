@@ -3,29 +3,13 @@ namespace WP_WebDAV;
 
 use Sabre\DAV;
 use Sabre\DAV\Auth;
+use Sabre\DAV\PropFind;
+use Sabre\DAV\INode;
 use \WP_User;
+use \WP_Query;
 
 class Plugin {
   const DEFAULT_REALM = 'WordPress Media Library';
-
-  public static $METHODS = [
-    'GET',
-    'POST',
-    'PUT',
-    'PATCH',
-    'DELETE',
-    'HEAD',
-    'TRACE',
-    'CONNECT',
-    'OPTIONS',
-    'PROPFIND',
-    'PROPPATCH',
-    'MKCOL',
-    'COPY',
-    'MOVE',
-    'LOCK',
-    'UNLOCK',
-  ];
 
   /**
    * @var bool
@@ -42,10 +26,71 @@ class Plugin {
       return;
     }
 
-    $this->registerRoutes();
-    $this->loadTextDomain();
+    add_action(
+      'init',
+      [ $this, 'onInit' ]
+    );
+
+    register_activation_hook(
+      __FILE__,
+      [ $this, 'onActivate' ]
+    );
+
+    register_deactivation_hook(
+      __FILE__,
+      [ $this, 'onDeactivate' ]
+    );
 
     $this->inited = true;
+  }
+
+  /**
+   * @return void
+   */
+  public function onInit() {
+    $this->registerRewriteRules();
+    $this->loadTextDomain();
+  }
+
+  /**
+   * Flush rewrites rules to add the rewrite rules
+   * of this plugin.
+   *
+   * @return void
+   */
+  public function onActivate() {
+    flush_rewrite_rules();
+  }
+
+  /**
+   * Flush rewrites rules to remove the rewrite rules
+   * of this plugin.
+   *
+   * @return void
+   */
+  public function onDeactivate() {
+    flush_rewrite_rules();
+  }
+
+  /**
+   * @param WP_Query $query
+   * @return WP_Query
+   */
+  public function parseQuery( WP_Query $query ) {
+    if ( ! isset( $query->query_vars['wp-webdav-path'] ) ) {
+      return $query;
+    }
+
+    if ( $this->shouldRedirectToRoot( $query ) ) {
+      wp_redirect(
+        '/wp-webdav/',
+        308
+      );
+      exit();
+    }
+
+    $this->handleRequests();
+    exit();
   }
 
   /**
@@ -53,7 +98,7 @@ class Plugin {
    *
    * @return void
    */
-  public function action() {
+  private function handleRequests() {
     $rootDirectory = new RootFolder();
 
     // The server object is responsible for making sense out of the WebDAV protocol
@@ -61,7 +106,7 @@ class Plugin {
 
     // If your server is not on your webroot, make sure the following line has the
     // correct information
-    $server->setBaseUri( '/wp-json/webdav/files/' );
+    $server->setBaseUri( '/wp-webdav/' );
 
     // This ensures that we get a pretty index in the browser, but it is
     // optional.
@@ -88,7 +133,7 @@ class Plugin {
 
     // All we need to do now, is to fire up the server
     $server->exec();
-    die();
+    exit();
   }
 
   /**
@@ -102,28 +147,60 @@ class Plugin {
   }
 
   /**
+   * @return bool
+   */
+  private function hasTrailingSlash() {
+    return (
+      substr( $_SERVER['REQUEST_URI'], -1, 1 ) === '/'
+    );
+  }
+
+  /**
+   * @return bool
+   */
+  private function hasQueryString() {
+    return ! empty( $_SERVER['QUERY_STRING'] );
+  }
+
+  /**
+   * @param WP_Query $query
+   * @return bool
+   */
+  private function shouldRedirectToRoot( WP_Query $query ) {
+    if ( ! empty( $query->query_vars[ 'wp-webdav-path' ] ) ) {
+      return false;
+    }
+
+    if ( $this->hasTrailingSlash() ) {
+      return false;
+    }
+
+    if ( $this->hasQueryString() ) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
    * @return void
    */
-  private function registerRoutes() {
-    $methods = self::$METHODS;
-    $self = $this;
+  private function registerRewriteRules() {
+    add_rewrite_rule(
+      '^wp-webdav(?:/(.*))?',
+      'index.php?wp-webdav-path=$matches[1]',
+      'top'
+    );
+
+    add_rewrite_tag(
+      '%wp-webdav-path%',
+      '.*'
+    );
 
     add_action(
-      'rest_api_init',
-      function () use ( $self, $methods ) {
-
-      register_rest_route( 'webdav', 'files', [
-        'methods' => join( ",", $methods ),
-        'callback'            => [ $self, 'action' ], // make sure it returns an XML string
-        'permission_callback' => '__return_true',
-      ]);
-
-      register_rest_route( 'webdav', 'files/.*', [
-        'methods' => join( ",", $methods ),
-        'callback'            => [ $self, 'action' ], // make sure it returns an XML string
-        'permission_callback' => '__return_true',
-      ]);
-    });
+      'parse_query',
+      [ $this, 'parseQuery' ]
+    );
   }
 
   /**

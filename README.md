@@ -2,7 +2,7 @@
 Makes the media files of a WordPress instance available via WebDAV.
 
 ## Endpoint
-After installing the files are available via `/wp-json/webdav/files`.
+After installing the files are available via `/wp-webdav`.
 
 ## Available filters
 
