@@ -76,12 +76,12 @@ class Plugin {
    * @param WP_Query $query
    * @return WP_Query
    */
-  public function parseQuery( WP_Query $query ) {
-    if ( ! isset( $query->query_vars['wp-webdav-path'] ) ) {
+  public function intersectQuery( WP_Query $query ) {
+    if ( ! isset( $query->query_vars['webdav_route'] ) ) {
       return $query;
     }
 
-    if ( $this->shouldRedirectToRoot( $query ) ) {
+    if ( $this->shouldRedirectToRoot() ) {
       wp_redirect(
         '/wp-webdav/',
         308
@@ -147,39 +147,31 @@ class Plugin {
   }
 
   /**
-   * @return bool
+   * @return string
    */
-  private function hasTrailingSlash() {
-    return (
-      substr( $_SERVER['REQUEST_URI'], -1, 1 ) === '/'
+  private function getRoutePath() {
+    $value = get_query_var(
+      'webdav_route'
     );
+
+    if ( ! empty( $value ) ) {
+      return $value;
+    }
+
+    if ( preg_match( '/\/$|\/\?/', $_SERVER['REQUEST_URI'] ) === 1 ) {
+      return '/';
+    }
+
+    return '';
   }
 
   /**
    * @return bool
    */
-  private function hasQueryString() {
-    return ! empty( $_SERVER['QUERY_STRING'] );
-  }
-
-  /**
-   * @param WP_Query $query
-   * @return bool
-   */
-  private function shouldRedirectToRoot( WP_Query $query ) {
-    if ( ! empty( $query->query_vars[ 'wp-webdav-path' ] ) ) {
-      return false;
-    }
-
-    if ( $this->hasTrailingSlash() ) {
-      return false;
-    }
-
-    if ( $this->hasQueryString() ) {
-      return false;
-    }
-
-    return true;
+  private function shouldRedirectToRoot() {
+    return (
+      $this->getRoutePath() === ''
+    );
   }
 
   /**
@@ -187,19 +179,25 @@ class Plugin {
    */
   private function registerRewriteRules() {
     add_rewrite_rule(
-      '^wp-webdav(?:/(.*))?',
-      'index.php?wp-webdav-path=$matches[1]',
+      '^wp-webdav$',
+      'index.php?webdav_route=',
+      'top'
+    );
+
+    add_rewrite_rule(
+      '^wp-webdav/(.*)?',
+      'index.php?webdav_route=/$matches[1]',
       'top'
     );
 
     add_rewrite_tag(
-      '%wp-webdav-path%',
+      '%webdav_route%',
       '.*'
     );
 
     add_action(
       'parse_query',
-      [ $this, 'parseQuery' ]
+      [ $this, 'intersectQuery' ]
     );
   }
 
