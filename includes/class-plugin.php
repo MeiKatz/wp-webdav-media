@@ -79,7 +79,7 @@ class Plugin {
    * @return WP_Query
    */
   public function intersectQuery( WP_Query $query ) {
-    if ( ! isset( $query->query_vars[ self::DEFAULT_REWRITE_TAG ] ) ) {
+    if ( ! $this->isResponsible( $query ) ) {
       return $query;
     }
 
@@ -178,6 +178,16 @@ class Plugin {
   private function shouldRedirectToRoot() {
     return (
       $this->getRoutePath() === ''
+    );
+  }
+
+  /**
+   * @param WP_Query $query
+   * @return bool
+   */
+  private function isResponsible( WP_Query $query ) {
+    return isset(
+      $query->query_vars[ self::DEFAULT_REWRITE_TAG ]
     );
   }
 
