@@ -160,16 +160,16 @@ class Plugin {
       return $value;
     }
 
-    $match = preg_match(
+    $matched = !!preg_match(
       '/\/$|\/\?/',
       $_SERVER['REQUEST_URI']
     );
 
-    if ( $match === 1 ) {
-      return '/';
-    }
-
-    return '';
+    return (
+      $matched
+        ? '/'
+        : ''
+    );
   }
 
   /**
