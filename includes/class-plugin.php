@@ -11,6 +11,8 @@ use \WP_Query;
 class Plugin {
   const DEFAULT_REALM = 'WordPress Media Library';
 
+  const DEFAULT_REWRITE_TAG = 'webdav_route';
+
   /**
    * @var bool
    */
@@ -77,7 +79,7 @@ class Plugin {
    * @return WP_Query
    */
   public function intersectQuery( WP_Query $query ) {
-    if ( ! isset( $query->query_vars['webdav_route'] ) ) {
+    if ( ! isset( $query->query_vars[ self::DEFAULT_REWRITE_TAG ] ) ) {
       return $query;
     }
 
@@ -151,14 +153,19 @@ class Plugin {
    */
   private function getRoutePath() {
     $value = get_query_var(
-      'webdav_route'
+      self::DEFAULT_REWRITE_TAG
     );
 
     if ( ! empty( $value ) ) {
       return $value;
     }
 
-    if ( preg_match( '/\/$|\/\?/', $_SERVER['REQUEST_URI'] ) === 1 ) {
+    $match = preg_match(
+      '/\/$|\/\?/',
+      $_SERVER['REQUEST_URI']
+    );
+
+    if ( $match === 1 ) {
       return '/';
     }
 
@@ -180,18 +187,27 @@ class Plugin {
   private function registerRewriteRules() {
     add_rewrite_rule(
       '^wp-webdav$',
-      'index.php?webdav_route=',
+      sprintf(
+        'index.php?%s=',
+        self::DEFAULT_REWRITE_TAG
+      ),
       'top'
     );
 
     add_rewrite_rule(
       '^wp-webdav/(.*)?',
-      'index.php?webdav_route=/$matches[1]',
+      sprintf(
+        'index.php?%s=/$matches[1]',
+        self::DEFAULT_REWRITE_TAG
+      ),
       'top'
     );
 
     add_rewrite_tag(
-      '%webdav_route%',
+      sprintf(
+        '%%%s%%',
+        self::DEFAULT_REWRITE_TAG
+      ),
       '.*'
     );
 
