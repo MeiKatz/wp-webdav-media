@@ -47,7 +47,7 @@ class UnassignedFolder extends DAV\Collection {
   public function getName() {
     return sprintf(
       '[%s]',
-      __( 'unassigned', 'wp-webdav-media' )
+      __( 'Unassigned files', 'wp-webdav-media' )
     );
   }
 }

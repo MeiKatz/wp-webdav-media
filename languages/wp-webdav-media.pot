@@ -12,8 +12,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-msgid "all files"
+msgid "All files"
 msgstr ""
 
-msgid "unassigned"
+msgid "Unassigned files"
 msgstr ""
