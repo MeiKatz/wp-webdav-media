@@ -8,11 +8,11 @@ class ComposerStaticInit847373255b78b4568855270ee7332a39
 {
     public static $files = array (
         '383eaff206634a77a1be54e64e6459c7' => __DIR__ . '/..' . '/sabre/uri/lib/functions.php',
+        '3569eecfeed3bcf0bad3c998a494ecb8' => __DIR__ . '/..' . '/sabre/xml/lib/Deserializer/functions.php',
+        '93aa591bc4ca510c520999e34229ee79' => __DIR__ . '/..' . '/sabre/xml/lib/Serializer/functions.php',
         '2b9d0f43f9552984cfa82fee95491826' => __DIR__ . '/..' . '/sabre/event/lib/coroutine.php',
         'd81bab31d3feb45bfe2f283ea3c8fdf7' => __DIR__ . '/..' . '/sabre/event/lib/Loop/functions.php',
         'a1cce3d26cc15c00fcd0b3354bd72c88' => __DIR__ . '/..' . '/sabre/event/lib/Promise/functions.php',
-        '3569eecfeed3bcf0bad3c998a494ecb8' => __DIR__ . '/..' . '/sabre/xml/lib/Deserializer/functions.php',
-        '93aa591bc4ca510c520999e34229ee79' => __DIR__ . '/..' . '/sabre/xml/lib/Serializer/functions.php',
         'ebdb698ed4152ae445614b69b5e4bb6a' => __DIR__ . '/..' . '/sabre/http/lib/functions.php',
     );
 
@@ -84,7 +84,7 @@ class ComposerStaticInit847373255b78b4568855270ee7332a39
         'WP_WebDAV\\AssetsFile' => __DIR__ . '/../..' . '/includes/class-assets-file.php',
         'WP_WebDAV\\File' => __DIR__ . '/../..' . '/includes/class-file.php',
         'WP_WebDAV\\Folder' => __DIR__ . '/../..' . '/includes/class-folder.php',
-        'WP_WebDAV\\Node' => __DIR__ . '/../..' . '/includes/class-node.php',
+        'WP_WebDAV\\PermissionsPlugin' => __DIR__ . '/../..' . '/includes/class-permissions-plugin.php',
         'WP_WebDAV\\Plugin' => __DIR__ . '/../..' . '/includes/class-plugin.php',
         'WP_WebDAV\\RootFolder' => __DIR__ . '/../..' . '/includes/class-root-folder.php',
         'WP_WebDAV\\Slug' => __DIR__ . '/../..' . '/includes/class-slug.php',

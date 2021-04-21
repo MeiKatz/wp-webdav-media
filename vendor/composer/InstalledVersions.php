@@ -24,24 +24,24 @@ class InstalledVersions
 private static $installed = array (
   'root' => 
   array (
-    'pretty_version' => 'dev-main',
-    'version' => 'dev-main',
+    'pretty_version' => '0.1',
+    'version' => '0.1.0.0',
     'aliases' => 
     array (
     ),
-    'reference' => '100c78d1205b76889c6e9d21b78baf646adec865',
-    'name' => '__root__',
+    'reference' => NULL,
+    'name' => 'meikatz/wp-webdav-media',
   ),
   'versions' => 
   array (
-    '__root__' => 
+    'meikatz/wp-webdav-media' => 
     array (
-      'pretty_version' => 'dev-main',
-      'version' => 'dev-main',
+      'pretty_version' => '0.1',
+      'version' => '0.1.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '100c78d1205b76889c6e9d21b78baf646adec865',
+      'reference' => NULL,
     ),
     'psr/log' => 
     array (
@@ -54,57 +54,57 @@ private static $installed = array (
     ),
     'sabre/dav' => 
     array (
-      'pretty_version' => '3.2.3',
-      'version' => '3.2.3.0',
+      'pretty_version' => '4.1.5',
+      'version' => '4.1.5.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'a9780ce4f35560ecbd0af524ad32d9d2c8954b80',
+      'reference' => 'c1afdc77a95efea6ee40c03c45f57c3c0c80ec22',
     ),
     'sabre/event' => 
     array (
-      'pretty_version' => '3.0.0',
-      'version' => '3.0.0.0',
+      'pretty_version' => '5.1.2',
+      'version' => '5.1.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '831d586f5a442dceacdcf5e9c4c36a4db99a3534',
+      'reference' => 'c120bec57c17b6251a496efc82b732418b49d50a',
     ),
     'sabre/http' => 
     array (
-      'pretty_version' => 'v4.2.4',
-      'version' => '4.2.4.0',
+      'pretty_version' => '5.1.1',
+      'version' => '5.1.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'acccec4ba863959b2d10c1fa0fb902736c5c8956',
+      'reference' => 'd0aafede6961df6195ce7a8dad49296b0aaee22e',
     ),
     'sabre/uri' => 
     array (
-      'pretty_version' => '1.2.1',
-      'version' => '1.2.1.0',
+      'pretty_version' => '2.2.1',
+      'version' => '2.2.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ada354d83579565949d80b2e15593c2371225e61',
+      'reference' => 'f502edffafea8d746825bd5f0b923a60fd2715ff',
     ),
     'sabre/vobject' => 
     array (
-      'pretty_version' => '4.2.2',
-      'version' => '4.2.2.0',
+      'pretty_version' => '4.3.5',
+      'version' => '4.3.5.0',
       'aliases' => 
       array (
       ),
-      'reference' => '449616b2d45b95c8973975de23f34a3d14f63b4b',
+      'reference' => 'd8a0a9ae215a8acfb51afc29101c7344670b9c83',
     ),
     'sabre/xml' => 
     array (
-      'pretty_version' => '1.5.1',
-      'version' => '1.5.1.0',
+      'pretty_version' => '2.2.3',
+      'version' => '2.2.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'a367665f1df614c3b8fefc30a54de7cd295e444e',
+      'reference' => 'c3b959f821c19b36952ec4a595edd695c216bfc6',
     ),
   ),
 );

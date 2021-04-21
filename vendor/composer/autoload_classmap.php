@@ -11,7 +11,7 @@ return array(
     'WP_WebDAV\\AssetsFile' => $baseDir . '/includes/class-assets-file.php',
     'WP_WebDAV\\File' => $baseDir . '/includes/class-file.php',
     'WP_WebDAV\\Folder' => $baseDir . '/includes/class-folder.php',
-    'WP_WebDAV\\Node' => $baseDir . '/includes/class-node.php',
+    'WP_WebDAV\\PermissionsPlugin' => $baseDir . '/includes/class-permissions-plugin.php',
     'WP_WebDAV\\Plugin' => $baseDir . '/includes/class-plugin.php',
     'WP_WebDAV\\RootFolder' => $baseDir . '/includes/class-root-folder.php',
     'WP_WebDAV\\Slug' => $baseDir . '/includes/class-slug.php',
